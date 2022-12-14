@@ -41,9 +41,11 @@ def draw_lines(grid, lines, value=''):
 
 def print_grid(grid, x1=0, x2=0, y1=0, y2=10):
     for y in range(y1, y2):
+        print("{0:03}".format(y), end="")
         for x in range(x1, x2):
             print(grid[y][x], end="")
         print()
+    print()
 
 
 def move_down(grid, sand):
@@ -81,20 +83,33 @@ def simulate_single(grid, sand):
 def simulate(grid):
     count = 0
     into_void = False
-    while not into_void:
+    while not into_void and grid[SOURCE[1]][SOURCE[0]] == '.':
+        grid[SOURCE[1]][SOURCE[0]] = 'o'
         into_void = simulate_single(grid, SOURCE)
         count += 1
-    return count - 1  # the last one fell into the void
+        # print_grid(grid, 470, 530, 0, 20)
+
+    return count
 
 
-def find_void(grid):
+def find_bottom(grid):
     return max(grid.keys())
 
 
 grid = sparse_grid()
 draw_lines(grid, lines)
 
-VOID = find_void(grid)
+VOID = find_bottom(grid) + 4
 SOURCE = (500, 0)
 
-print(simulate(grid))
+# part1 = simulate(grid) - 1
+# print("part 1:", part1)
+
+floor = find_bottom(grid) + 2
+width_max = max(map(max, grid.values())) + 1000
+width_min = min(map(min, grid.values())) - 1000
+
+draw_line_segment(grid, (width_min, floor), (width_max, floor), '#')
+
+part2 = simulate(grid)
+print(part2)
